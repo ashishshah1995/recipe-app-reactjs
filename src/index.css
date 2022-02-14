@@ -281,8 +281,7 @@ article.nextSlide {
 }
 
 .section-center {
-  margin: 0 auto;
-  margin-top: 4rem;
+  margin: 0 0 21px -93px;
   width: 80vw;
   height: 450px;
   max-width: 800px;
