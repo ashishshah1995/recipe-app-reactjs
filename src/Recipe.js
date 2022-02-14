@@ -5,7 +5,20 @@ import { MDBIcon } from "mdbreact";
 
 const Recipe = () => {
   const [index, setIndex] = useState(0);
-  const { name, recipe, image, text } = recipes[index];
+  const [recipe, useReipe] = useState(recipes);
+
+  React.useEffect(() => {
+    let slider = setInterval(() => {
+      setIndex((oldIndex) => {
+        let index = oldIndex + 1;
+        if (index > recipe.length - 1) {
+          index = 0;
+        }
+        return index;
+      });
+    }, 3000);
+    return () => clearInterval(slider);
+  }, [index]);
 
   const checkNumber = (number) => {
     if (number > recipes.length - 1) {
@@ -28,8 +41,13 @@ const Recipe = () => {
   //     return checkNumber(newIndex);
   //   });
   const prevRecipe = () => {
-    const newIndex = index - 1;
-    setIndex(checkNumber(newIndex));
+    setIndex((oldIndex) => {
+      let index = oldIndex - 1;
+      if (index < 0) {
+        index = recipe.length - 1;
+      }
+      return index;
+    });
   };
 
   const randomRecipe = () => {
@@ -41,30 +59,49 @@ const Recipe = () => {
   };
 
   return (
-    <article className="review">
-      <div className="img-container">
-        <img src={image} alt={name} className="recipe-img" />
-        <span className="quote-icon">
-          <MDBIcon icon="pepper-hot" />;
-        </span>
-      </div>
-      <h4 className="author">{name}</h4>
-      <a href={recipe} className="recipe" target="_blank">
-        Link to recipe
-      </a>
-      <p className="info">{text}</p>
-      <div className="button-container">
-        <button className="prev-btn" onClick={prevRecipe}>
-          <FaChevronLeft />
-        </button>
-        <button onClick={nextRecipe} className="next-btn">
-          <FaChevronRight />
-        </button>
-      </div>
-      <button onClick={randomRecipe} className="random-btn">
-        surprise me
-      </button>
-    </article>
+    <section className="section">
+      <section className="section-center">
+        {recipes.map((recipeData, recipeIndex) => {
+          const { id, name, recipe, image, text } = recipeData;
+          let position = "nextSlide";
+          if (recipeIndex == index) {
+            position = "activeSlide";
+          }
+          if (
+            recipeIndex === index - 1 ||
+            (index === 0 && recipeIndex === recipe.length - 1)
+          ) {
+            position = "lastSlide";
+          }
+          return (
+            <article className={position} key={id}>
+              <div className="img-container">
+                <img src={image} alt={name} className="recipe-img" />
+                <span className="quote-icon">
+                  <MDBIcon icon="pepper-hot" />;
+                </span>
+              </div>
+              <h4 className="author">{name}</h4>
+              <a href={recipe} className="recipe" target="_blank">
+                Link to recipe
+              </a>
+              <p className="info">{text}</p>
+              <div className="button-container">
+                <button className="prev-btn" onClick={prevRecipe}>
+                  <FaChevronLeft />
+                </button>
+                <button onClick={nextRecipe} className="next-btn">
+                  <FaChevronRight />
+                </button>
+              </div>
+              <button onClick={randomRecipe} className="random-btn">
+                surprise me
+              </button>
+            </article>
+          );
+        })}
+      </section>
+    </section>
   );
 };
 
